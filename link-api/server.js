@@ -5,6 +5,7 @@ import helmet from "helmet";
 import morgan from "morgan";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth.js";
+import protectedRoutes from "./routes/protected.js";
 
 dotenv.config();
 const app = express();
@@ -17,6 +18,7 @@ app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/protected", protectedRoutes);
 
 // Database Connection
 mongoose
