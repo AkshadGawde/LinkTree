@@ -6,6 +6,7 @@ import morgan from "morgan";
 import mongoose from "mongoose";
 import authRoutes from "./routes/auth.js";
 import protectedRoutes from "./routes/protected.js";
+import referralRoutes from "./routes/referral.js";
 
 dotenv.config();
 const app = express();
@@ -19,6 +20,7 @@ app.use(morgan("dev"));
 // Routes
 app.use("/api/auth", authRoutes);
 app.use("/api/protected", protectedRoutes);
+app.use("/api/referrals", referralRoutes);
 
 // Database Connection
 mongoose
