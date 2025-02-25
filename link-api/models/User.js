@@ -8,6 +8,9 @@ const UserSchema = new mongoose.Schema(
     password: { type: String, required: true },
     referralCode: { type: String, unique: true, default: uuidv4 },
     referredBy: { type: String, default: null },
+
+    resetPasswordToken: { type: String, default: null },
+    resetPasswordExpires: { type: Date, default: null },
   },
   { timestamps: true }
 );
