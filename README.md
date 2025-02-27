@@ -15,10 +15,10 @@ A full-stack **MERN** project that replicates **LinkTree/Bento.me**, allowing us
 
 ---
 
-## 📂 Project Structure
+## 📂 Backend Project Structure
 
 ```
-backend/  
+link-api/  
 ├── models/          # MongoDB Models  
 │   ├── User.js  
 │   ├── Referral.js  
@@ -33,17 +33,13 @@ backend/
 │   ├── referralController.js  
 │  
 ├── middlewares/     # Authentication Middleware  
-│   ├── authMiddleware.js  
-│  
-├── tests/           # Jest & Supertest Tests  
-│   ├── auth.test.js  
-│   ├── referral.test.js  
-│   ├── user.test.js  
+│   ├── authMiddleware.js   
 │  
 ├── config/          # Database & Env Config  
 │   ├── db.js  
 │  
 ├── server.js        # Main Express Server  
+├── test.js          # Testing file 
 └── .env             # Environment Variables  
 ```
 
