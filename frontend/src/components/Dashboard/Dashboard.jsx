@@ -8,19 +8,24 @@ import {
   logoutUser,
 } from "../../services/api";
 import { toast } from "react-toastify";
+import ReferralStats from "./ReferralStats";
 
 const Dashboard = () => {
   const { user, setUser } = useContext(AuthContext);
   const navigate = useNavigate();
   const [loading, setLoading] = useState(true);
   const [referrals, setReferrals] = useState([]);
-  const [stats, setStats] = useState({});
+  const [stats, setStats] = useState({
+    totalReferrals: 0,
+    successfulReferrals: 0,
+    pendingReferrals: 0,
+  });
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const dashboardRes = await getDashboard();
-        console.log("Dashboard API Response:", dashboardRes.data); // ✅ Debugging
+        console.log("Dashboard API Response:", dashboardRes.data);
         setUser(dashboardRes.data.user);
 
         const [referralsRes, statsRes] = await Promise.all([
@@ -56,6 +61,11 @@ const Dashboard = () => {
     toast.success("Referral link copied!");
   };
 
+  const copyReferralCode = () => {
+    navigator.clipboard.writeText(user?.referralCode);
+    toast.success("Referral code copied!");
+  };
+
   if (loading) return <div className="text-center mt-10">Loading...</div>;
 
   return (
@@ -65,12 +75,23 @@ const Dashboard = () => {
           Welcome, {user?.username} 🎉
         </h2>
         <p className="text-gray-600 mb-2">Email: {user?.email}</p>
-        <p className="text-gray-600 mb-4">
-          Referral Code:{" "}
-          <span className="font-semibold">{user?.referralCode}</span>
-        </p>
 
         <div className="flex items-center gap-2">
+          <input
+            type="text"
+            value={user?.referralCode}
+            readOnly
+            className="border p-2 w-full rounded-md text-gray-600"
+          />
+          <button
+            onClick={copyReferralCode}
+            className="bg-blue-500 text-white px-2 py-2 rounded-md hover:bg-blue-600"
+          >
+            Copy Code
+          </button>
+        </div>
+
+        <div className="flex items-center gap-2 mt-4">
           <input
             type="text"
             value={`http://localhost:3000/register?ref=${user?.referralCode}`}
@@ -79,17 +100,13 @@ const Dashboard = () => {
           />
           <button
             onClick={copyReferralLink}
-            className="bg-blue-500 text-white px-3 py-2 rounded-md hover:bg-blue-600"
+            className="bg-green-500 text-white px-2 py-2 rounded-md hover:bg-green-600"
           >
-            Copy
+            Copy Link
           </button>
         </div>
 
-        <div className="bg-gray-100 p-4 rounded-md mt-6">
-          <h3 className="text-lg font-semibold mb-2">Referral Stats</h3>
-          <p>Total Referrals: {stats?.total || 0}</p>
-          <p>Successful Referrals: {stats?.successful || 0}</p>
-        </div>
+        <ReferralStats stats={stats} />
 
         <div className="mt-6">
           <h3 className="text-lg font-semibold mb-2">Your Referrals</h3>
