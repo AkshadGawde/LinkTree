@@ -1,15 +1,21 @@
-import { useState, useContext } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useContext, useEffect } from "react";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "react-toastify";
 import { AuthContext } from "../../contexts/AuthContexts";
-import { loginUser } from "../../services/api";
+import { loginUser, getDashboard } from "../../services/api";
 
 const Login = () => {
-  const { setUser } = useContext(AuthContext);
+  const { user, setUser } = useContext(AuthContext);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate("/dashboard");
+    }
+  }, [user, navigate]);
 
   const handleLogin = async (e) => {
     e.preventDefault();
@@ -17,10 +23,14 @@ const Login = () => {
 
     try {
       const response = await loginUser({ email, password });
+
       localStorage.setItem("token", response.data.token);
-      setUser(response.data);
+
+      const userResponse = await getDashboard();
+      setUser(userResponse.data.user);
+
       toast.success("Login successful! Redirecting...");
-      setTimeout(() => navigate("/dashboard"), 1500);
+      navigate("/dashboard");
     } catch (error) {
       toast.error(
         error.response?.data?.error || "Login failed! Please try again."
@@ -31,13 +41,13 @@ const Login = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md mt-10">
-      <h2 className="text-2xl font-bold mb-4">Login</h2>
+    <div className="max-w-md mx-auto p-6 bg-white shadow-md mt-10 rounded-md">
+      <h2 className="text-2xl font-bold mb-4 text-center">Login</h2>
       <form onSubmit={handleLogin}>
         <input
           type="email"
           placeholder="Email"
-          className="border p-2 w-full my-2"
+          className="border p-2 w-full my-2 rounded"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           required
@@ -45,14 +55,21 @@ const Login = () => {
         <input
           type="password"
           placeholder="Password"
-          className="border p-2 w-full my-2"
+          className="border p-2 w-full my-2 rounded"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
           required
         />
+
+        <div className="flex justify-between items-center text-sm text-blue-500 mb-2">
+          <Link to="/forgot-password" className="hover:underline">
+            Forgot Password?
+          </Link>
+        </div>
+
         <button
           type="submit"
-          className={`p-2 w-full text-white ${
+          className={`p-2 w-full text-white rounded ${
             loading ? "bg-gray-500" : "bg-blue-500 hover:bg-blue-600"
           }`}
           disabled={loading}

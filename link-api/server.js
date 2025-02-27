@@ -16,6 +16,12 @@ app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("dev"));
+app.use(
+  cors({
+    origin: "http://localhost:3000",
+    credentials: true,
+  })
+);
 
 // Routes
 app.use("/api/auth", authRoutes);
